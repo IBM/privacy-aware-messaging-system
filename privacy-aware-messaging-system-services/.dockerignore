@@ -1,0 +1,9 @@
+# By default, ignore everything
+*
+
+# Add exceptions
+!pubsub
+
+# source files
+!setup.py
+!README.md
