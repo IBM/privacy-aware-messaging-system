@@ -30,7 +30,7 @@ These services can also be used to provide a safer communication infrastructure 
 Install the chart using the following command:
 
 ```bash
-helm install -f myvalues.yaml funny-test ./pams
+helm install -f myvalues.yaml funny-test ./privacy-aware-messaging-system
 ```
 
 where:
@@ -51,7 +51,7 @@ docker:
 # Database configuration
 utility:
   db:
-    imageName: "res-drl-docker-local.artifactory.swg-devops.com/pams-utility"
+    imageName: "res-drl-docker-local.artifactory.swg-devops.com/privacy-aware-messaging-system-utility"
     imageTag: "postgres"
   registryCredentials:
     registry: res-drl-docker-local.artifactory.swg-devops.com
@@ -59,7 +59,7 @@ utility:
     password: KEY
     email: EMAIL
 service:
-  imageName: "res-drl-docker-local.artifactory.swg-devops.com/pubsub-backend"
+  imageName: "res-drl-docker-local.artifactory.swg-devops.com/privacy-aware-messaging-system-services"
 db:
   type: "postgres"
   name: "MYDATABASE"
@@ -107,9 +107,9 @@ After that, minikube will not attempt to fetch the image from DockerHub since it
 * Start your docker client and minikube: `minikube start`
 * Build a local docker utility image (temporary hack while we finish optimizing the setup)
     * Tell your local docker installation to use minikube as docker engine: `eval $(minikube docker-env)`
-    * In `<ROOT_DIR>/utils` run `docker build -t pams-backend-utility:postgres -f Dockerfile.postgres .`
+    * In `<ROOT_DIR>/utils` run `docker build -t privacy-aware-messaging-system-utility:postgres -f Dockerfile.postgres .`
 * Now lets build the back end. In `<ROOT_DIR>`:
-    * Install all kubernetes modules: `helm install pams ./pams`
+    * Install all kubernetes modules: `helm install pams ./privacy-aware-messaging-system`
     * Check that all minikube modules status are set to `Running`:   `kubectl get all`
 
 ### Setup Python Module
