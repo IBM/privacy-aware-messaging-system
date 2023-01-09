@@ -1,0 +1,16 @@
+{{ if not .Values.rabbitmq.external}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-rabbitmq
+  labels:
+    name: {{ .Release.Name }}-rabbitmq
+spec:
+  selector:
+    app: {{ .Release.Name }}-rabbitmq
+  ports:
+    - port: {{ .Values.rabbitmq.port }}
+      name: rabbitmq
+    - port: {{ .Values.rabbitmq.management_port }}
+      name: rabbitmq-management
+{{ end }}

@@ -1,0 +1,8 @@
+{{ if and (.Values.db.wipeAndInit) (eq .Values.db.type "postgres")}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-init-postgres
+data:
+{{ (.Files.Glob "configMapFiles/init-postgres/initdb.sh").AsConfig | indent 2 }}
+{{ end }}

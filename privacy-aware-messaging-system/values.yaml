@@ -1,0 +1,86 @@
+k8s:
+  persistence:
+    enabled: true
+    hasDefaultStorageClass: true
+    explicitStorageClass: null
+
+# Docker registry
+docker:
+  registry:
+    name: ""
+    username: ""
+    password: ""
+  timezone: "UTC"
+
+# Database configuration
+db:
+  external: false
+  wipeAndInit: true
+  type: "postgres"
+  # imageName: "ibmcom/db2"
+  # imageTag: "11.5.7.0a"
+  imageName: "postgres"
+  imageTag: "14.4-alpine"
+  imagePullPolicy: "IfNotPresent"
+  replicaCount: 1
+  restartPolicy: "Always"
+  name: "MYDATABASE"
+  schema_name: "MYSCHEMA"
+  host: null
+  port: 5432
+  # port: 50000
+  protocol: "http"
+  auth:
+    username: "musketeer"
+    password: "eYqa_Q6@uX-4mTE.*tt38jYQ"
+  persistence:
+    size: 2Gi
+
+# PubSub configuration
+rabbitmq:
+  external: false
+  imageName: "rabbitmq"
+  imageTag: "3.10-management-alpine"
+  imagePullPolicy: "IfNotPresent"
+  replicaCount: 1
+  restartPolicy: "Always"
+  host: null
+  port: 5672
+  management_port: 15672
+  protocol: "http"
+  auth:
+    username: "rabbit-musketeer"
+    password: "yGehKh36!WHpPK9URvCLT6TU"
+  persistence:
+    size: 2Gi
+
+# services
+service:
+  imageName: "privacy-aware-messaging-system-services"
+  imageTag: "latest"
+  restartPolicy: "Always"
+
+# S3/COS configuration
+s3:
+  external: false
+  imageName: "minio/minio"
+  imageTag: "RELEASE.2022-07-17T15-43-14Z"
+  strategy: "Recreate"
+  restartPolicy: "Always"
+  port: 9000
+  portDashboard: 45367
+  auth:
+    username: "minio-musketeer"
+    password: "wm*uT@tW8.uVyqKHTVZVXAYw"
+
+# utility values
+utility:
+  db:
+    imageName: "privacy-aware-messaging-system-utility"
+    imageTag: "postgres"
+  imagePullPolicy: "IfNotPresent"
+
+# ingress information
+ingress:
+  enableTls: false
+  enabled: true

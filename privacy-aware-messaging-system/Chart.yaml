@@ -1,0 +1,21 @@
+apiVersion: v2
+type: application
+name: privacy-aware-messaging-system
+version: 0.1.0
+home: "https://github.com/IBM/privacy-aware-messaging-system"
+description: A Helm chart to deploy the backend services for the PAMS extension of IBMFL
+keywords:
+  - IBM Research Europe - Ireland
+  - IBM Research Europe
+  - IBM Research
+  - Federated Learning
+  - PubSub
+  - PAMS
+maintainers:
+- name: Stefano Braghin
+  email: stefanob@ie.ibm.com
+- name: Mark Purcell
+  email: markpurcell@ie.ibm.com
+- name: Killian Levacher
+  email: killian.levacher@ibm.com
+appVersion: "0.1.0"

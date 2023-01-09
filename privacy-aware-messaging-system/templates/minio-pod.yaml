@@ -1,0 +1,56 @@
+{{ if not .Values.s3.external }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-minio
+  labels:
+    name: {{ .Release.Name }}-minio
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-minio
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-minio
+    spec:
+      restartPolicy: {{ .Values.s3.restartPolicy }}
+      containers:
+        - name: minio
+          image: "{{- .Values.docker.registry.name -}}{{- .Values.s3.imageName -}}:{{- .Values.s3.imageTag -}}"
+          args:
+            - server
+            - /data
+          ports:
+            - containerPort: {{ .Values.s3.port }}
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
+          # Readiness probe detects situations when MinIO server instance
+          # is not ready to accept traffic. Kubernetes doesn't forward
+          # traffic to the pod while readiness checks fail.
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            initialDelaySeconds: 120
+            periodSeconds: 20
+          # Liveness probe detects situations where MinIO server instance
+          # is not working properly and needs restart. Kubernetes automatically
+          # restarts the pods if liveness checks fail.
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+            initialDelaySeconds: 120
+            periodSeconds: 20
+          env:
+            # MinIO access key and secret key
+            - name: MINIO_ROOT_USER
+              value: "{{- .Values.s3.auth.username -}}"
+            - name: MINIO_ROOT_PASSWORD
+              value: "{{- .Values.s3.auth.password -}}"
+      volumes:
+        - name: data
+          emptyDir: {}
+{{ end }}

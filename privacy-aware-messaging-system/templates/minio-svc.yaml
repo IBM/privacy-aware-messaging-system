@@ -1,0 +1,16 @@
+{{ if not .Values.s3.external}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-minio
+  labels:
+    name: {{ .Release.Name }}-minio
+spec:
+  selector:
+    app: {{ .Release.Name }}-minio
+  ports:
+    - port: {{ .Values.s3.port }}
+      name: {{ .Release.Name }}-minio
+    - port: {{ .Values.s3.portDashboard }}
+      name: {{ .Release.Name }}-minio-dashboard
+{{ end }}

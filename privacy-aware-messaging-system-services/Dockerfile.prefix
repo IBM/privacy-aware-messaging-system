@@ -1,0 +1,17 @@
+FROM python:3.10-alpine
+
+RUN apk add --update \
+    gcc \
+    libc-dev \
+    libffi-dev \
+    libpq-dev \
+    bash \
+    && rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+COPY setup.py README.md /app/
+COPY pams/ /app/pams/
+RUN pip install --upgrade pip
+RUN pip install .
+

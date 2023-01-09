@@ -1,0 +1,36 @@
+{{ if not .Values.rabbitmq.external }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rabbitmq
+  labels:
+    name: {{ .Release.Name }}-rabbitmq
+spec:
+  replicas: {{ .Values.rabbitmq.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-rabbitmq
+    spec:
+      restartPolicy: {{ .Values.rabbitmq.restartPolicy }}
+      containers:
+      - name: rabbitmq
+        image: "{{- .Values.docker.registry.name -}}{{- .Values.rabbitmq.imageName -}}:{{- .Values.rabbitmq.imageTag -}}"
+        ports:
+        - name: rabbitmq
+          containerPort: {{ .Values.rabbitmq.port }}
+        env:
+        - name: "RABBITMQ_DEFAULT_USER"
+          value: {{ .Values.rabbitmq.auth.username }}
+        - name: "RABBITMQ_DEFAULT_PASS"
+          value: {{ .Values.rabbitmq.auth.password }}
+      {{- if .Values.k8s.persistence.enabled }}
+      volumes:
+        - name: database-storage
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-rabbitmq-pvc
+      {{- end }}
+{{- end }}

@@ -1,0 +1,43 @@
+{{ if and (.Values.db.wipeAndInit) (eq .Values.db.type "postgres")}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-init-postgres
+  labels:
+    name: {{ .Release.Name }}-init-postgres
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name }}-init-postgres
+      labels:
+        name: {{ .Release.Name }}-init-postgres
+    spec:
+      restartPolicy: Never
+      volumes:
+      - name: task-dir
+        configMap:
+          name: {{ .Release.Name }}-init-postgres
+{{ include "pbs.imagePullSecrets" . | indent 6 }}
+      containers:
+      - name: init-postgres
+        image: "{{- .Values.utility.db.imageName -}}:{{- .Values.utility.db.imageTag -}}"
+        imagePullPolicy: {{ .Values.utility.imagePullPolicy | quote }}
+        command: ["/bin/bash", "-c", "set -e; . /task/initdb.sh"]
+        volumeMounts:
+        - name: task-dir
+          mountPath: "/task/initdb.sh"
+          subPath: "initdb.sh"
+        env:
+        - name: "DB_URL"
+          value: "jdbc:postgresql://{{- .Release.Name -}}-postgres:{{- .Values.db.port -}}/postgres"
+        - name: "USERNAME"
+          value: {{ .Values.db.auth.username }}
+        - name: "PASSWORD"
+          value: {{ .Values.db.auth.password }}
+        - name: "schema_name"
+          value: {{ .Values.db.schema_name }}
+{{ end }}
