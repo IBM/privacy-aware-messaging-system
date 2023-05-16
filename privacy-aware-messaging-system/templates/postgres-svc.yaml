@@ -1,0 +1,14 @@
+{{ if and (not .Values.db.external) (eq .Values.db.type "postgres") }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-postgres
+  labels:
+    name: {{ .Release.Name }}-postgres
+spec:
+  selector:
+    app: {{ .Release.Name }}-postgres
+  ports:
+    - port: {{ .Values.db.port }}
+      name: postgres
+{{ end }}
